@@ -1,6 +1,30 @@
 import streamlit as st
 from openai import OpenAI
 
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background: linear-gradient(135deg, #1e1e2f, #a239ca);
+        color: white;
+    }
+    /* تعديل شكل الأزرار */
+    .stButton>button {
+        border-radius: 50px;
+        background-color: #4717f6;
+        color: white;
+        border: 2px solid #a239ca;
+        transition: 0.3s;
+    }
+    .stButton>button:hover {
+        background-color: #a239ca;
+        border: 2px solid white;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # إعدادات الصفحة
 st.set_page_config(page_title="AI Content Creator", page_icon="🚀")
 
