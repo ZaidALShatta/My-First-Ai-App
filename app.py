@@ -1,71 +1,74 @@
 import streamlit as st
 
-# 1. تصميم المطعم (CSS)
+# 1. إعدادات الصفحة والتصميم CSS
+st.set_page_config(page_title="مطعم الفخامة الذكي", layout="wide")
+
 st.markdown("""
     <style>
-    .food-card {
-        background-color: white;
+    /* زر واتساب الثابت عاليمين */
+    .fixed-whatsapp {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #25d366;
+        color: white;
         padding: 15px;
-        border-radius: 15px;
-        border: 1px solid #ddd;
-        text-align: center;
-        margin-bottom: 10px;
+        border-radius: 50%;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+        z-index: 1000;
+        font-size: 24px;
+        text-decoration: none;
     }
-    .total-box {
-        background-color: #023047;
-        color: #ffb703;
-        padding: 20px;
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 20px;
+        justify-content: center;
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        background-color: #f0f2f6;
         border-radius: 10px;
-        font-size: 25px;
-        text-align: center;
-        font-weight: bold;
+        padding: 10px 20px;
     }
     </style>
+    <a href="https://wa.me/963985033064" class="fixed-whatsapp" target="_blank">💬</a>
     """, unsafe_allow_html=True)
 
-st.title("🍔 منيو مطعم المدينة")
-st.write("اختر وجباتك وسنحسب لك المجموع فوراً")
+# 2. إنشاء التبويبات (Tabs)
+tab1, tab2, tab3, tab4 = st.tabs(["📜 المنيو", "🛍️ اطلب الآن", "🖼️ معرض الصور", "⭐ التقييمات"])
 
-# تعريف الأسعار
-price_burger = 25000
-price_pizza = 40000
-price_fries = 10000
+# --- الصفحة 1: المنيو ---
+with tab1:
+    st.header("📜 قائمة الطعام")
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("### 🍔 البرجر\n- كلاسيك: 25,000\n- دبل تشيز: 35,000")
+    with c2:
+        st.markdown("### 🍕 البيتزا\n- مارغريتا: 30,000\n- فصول أربعة: 45,000")
 
-total_price = 0
-order_details = []
+# --- الصفحة 2: نظام الطلب المباشر ---
+with tab2:
+    st.header("🛍️ طلب جديد")
+    with st.form("order_form"):
+        name = st.text_input("الاسم الكريم")
+        address = st.text_input("عنوان التوصيل")
+        order_details = st.text_area("شو حابب تطلب؟")
+        submitted = st.form_submit_button("إرسال الطلب لواتساب المطعم")
+        
+        if submitted:
+            msg = f"طلب جديد من: {name}%0Aالعنوان: {address}%0Aالطلب: {order_details}"
+            st.markdown(f'<meta http-equiv="refresh" content="0;url=https://wa.me/963985033064?text={msg}">', unsafe_allow_html=True)
 
-# 2. عرض المنيو مع خيارات الاختيار
-col1, col2, col3 = st.columns(3)
+# --- الصفحة 3: معرض الصور ---
+with tab3:
+    st.header("🖼️ لقطات من مطبخنا")
+    img_cols = st.columns(3)
+    # ملاحظة: استبدل الروابط بصور حقيقية للمطعم
+    img_cols[0].image("https://via.placeholder.com/300x200", caption="وجباتنا الطازجة")
+    img_cols[1].image("https://via.placeholder.com/300x200", caption="صالة الطعام")
+    img_cols[2].image("https://via.placeholder.com/300x200", caption="أجواء السهرة")
 
-with col1:
-    st.markdown('<div class="food-card"><h3>برجر 🍔</h3><p>25,000 ل.س</p></div>', unsafe_allow_html=True)
-    if st.checkbox("إضافة برجر", key="burger"):
-        total_price += price_burger
-        order_details.append("برجر")
-
-with col2:
-    st.markdown('<div class="food-card"><h3>بيتزا 🍕</h3><p>40,000 ل.س</p></div>', unsafe_allow_html=True)
-    if st.checkbox("إضافة بيتزا", key="pizza"):
-        total_price += price_pizza
-        order_details.append("بيتزا")
-
-with col3:
-    st.markdown('<div class="food-card"><h3>بطاطا 🍟</h3><p>10,000 ل.س</p></div>', unsafe_allow_html=True)
-    if st.checkbox("إضافة بطاطا", key="fries"):
-        total_price += price_fries
-        order_details.append("بطاطا")
-
-st.divider()
-
-# 3. عرض المجموع النهائي
-if total_price > 0:
-    st.markdown(f'<div class="total-box">الحساب الإجمالي: {total_price:,} ل.س</div>', unsafe_allow_html=True)
-    
-    # تجهيز رسالة الواتساب تلقائياً
-    items_text = " + ".join(order_details)
-    whatsapp_msg = f"مرحباً، أريد طلب: {items_text}. الحساب الإجمالي: {total_price:,} ل.س"
-    whatsapp_url = f"https://wa.me/963985033064?text={whatsapp_msg}"
-    
-    st.markdown(f'<a href="{whatsapp_url}" target="_blank" style="display: block; text-align: center; padding: 15px; background-color: #25d366; color: white; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top:10px;">إرسال الطلب عبر واتساب 💬</a>', unsafe_allow_html=True)
-else:
-    st.info("قم باختيار وجباتك من الأعلى للبدء بالطلب.")
+# --- الصفحة 4: التقييمات ---
+with tab4:
+    st.header("⭐ آراء زبائننا")
+    st.chat_message("user").write("**أحمد:** الأكل وصل سخن وطعمة بتجنن! بنصح فيه.")
+    st.chat_message("user").write("**ليلى:** خدمة سريعة جداً ونظافة واضحة.")
